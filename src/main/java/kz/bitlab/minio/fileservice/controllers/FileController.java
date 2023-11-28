@@ -1,5 +1,6 @@
 package kz.bitlab.minio.fileservice.controllers;
 
+import kz.bitlab.minio.fileservice.dto.AttachmentFileDto;
 import kz.bitlab.minio.fileservice.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -8,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/file")
@@ -27,5 +30,20 @@ public class FileController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+fileName+"\"")
                 .body(fileService.downloadFile(fileName));
+    }
+
+    @GetMapping
+    public List<AttachmentFileDto> getAttachments(){
+        return fileService.getAttachments();
+    }
+
+    @GetMapping(value = "/{id}")
+    private AttachmentFileDto getAttachment(@PathVariable(name = "id") Long id){
+        return fileService.getAttachment(id);
+    }
+
+    @GetMapping(value = "/filename/{fileName}")
+    private AttachmentFileDto getAttachment(@PathVariable(name = "fileName") String fileName){
+        return fileService.getAttachmentByFileName(fileName);
     }
 }
